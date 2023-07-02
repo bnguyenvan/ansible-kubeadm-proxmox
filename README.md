@@ -2,5 +2,3 @@
 
 # Create host.ini file for cluster
 
-
-
