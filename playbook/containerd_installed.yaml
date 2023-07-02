@@ -1,0 +1,26 @@
+---
+- hosts: cluster_nodes
+  become: true
+  tasks:
+    - name: install packages
+      apt:
+        pkg:
+          - curl
+          - ca-certificates
+          - gnupg
+        state: latest
+        update_cache: true
+
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Update apt and install containerd.io
+      apt:
+        name: containerd.io

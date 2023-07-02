@@ -1,0 +1,53 @@
+---
+- hosts: cluster_nodes
+  become: true
+  tasks:
+    - name: Replace file config.toml to /etc/containerd
+      copy:
+        src: /Users/nguyenvanbong/My_Documents/ansible/config_files/config.toml
+        dest: /etc/containerd
+        owner: root
+        group: root
+        mode: 0644
+    - name: Restart containerd.io
+      ansible.builtin.service:
+        name: containerd
+        state: restarted
+
+    - name: installed requirement packages
+      apt:
+        pkg:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+        state: latest
+        update_cache: true
+    
+    - name: Download the Google Cloud public signing key
+      apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        state: present
+
+    - name: Add the Kubernetes apt repository
+      apt_repository:
+        repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+        state: present
+        filename: 'kubernetes'
+
+    - name: Update apt package index, install kubelet, kubeadm and pin their version
+      apt:
+        pkg:
+          - kubelet
+          - kubeadm
+        state: present
+        update_cache: true
+
+- hosts: master_nodes
+  become: true
+  tasks:
+    - name: Update apt package index, install kubelet
+      apt:
+        pkg:
+          - kubectl
+        state: present
+        update_cache: true
