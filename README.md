@@ -18,6 +18,7 @@ git commit -m "Project init"
 git remote add origin "https://your_git_hub_repository.git"
 git branch -M master
 git push -u origin master
+```
 
 # Create host.ini file for cluster
 
